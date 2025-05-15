@@ -67,4 +67,18 @@ contract LegitTest is Test {
 
         assertEq(legit.getAssetTotalSupply(bytes(assetKey)), totalSupply);
     }
+
+    function test_GetTokenUri() public {
+        uint32 tokenId = 1;
+
+        legit.registerAsset(bytes(assetKey), totalSupply);
+
+        bytes memory assetKeyHash = bytes(assetKey);
+        legit.mint(assetKeyHash, tokenId);
+
+        bytes32 assetHash = keccak256(abi.encodePacked(assetKeyHash, tokenId));        
+        uint256 assetId = uint256(assetHash);
+
+        assertEq(legit.tokenURI(assetId), string(abi.encodePacked("https://pacaqpbmmzkxcsdudlgx.supabase.co/storage/v1/object/public/products-onchain/", assetKey, ".json")));
+    }
 }

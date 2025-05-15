@@ -7,6 +7,7 @@ import {Ownable} from "solady/auth/Ownable.sol";
 contract Legit is ERC721, Ownable {
     mapping(bytes => uint32) private _assetsTotalSupply;
     mapping(bytes32 => bool) private _assetsMinted;
+    mapping(uint256 => bytes) private _tokenIdToAssetKey;
 
     constructor() {
         _initializeOwner(msg.sender);
@@ -24,7 +25,10 @@ contract Legit is ERC721, Ownable {
         bytes32 assetHash = keccak256(abi.encodePacked(assetKey, tokenId));        
         require(!_assetsMinted[assetHash], "Asset already minted");
         
-        _mint(msg.sender, uint256(assetHash));
+        uint256 assetId = uint256(assetHash);
+        _tokenIdToAssetKey[assetId] = assetKey;
+
+        _mint(msg.sender, assetId);
         _assetsMinted[assetHash] = true;
     }
 
@@ -44,7 +48,8 @@ contract Legit is ERC721, Ownable {
         return "LGT";
     }
 
-    function tokenURI(uint256 id) public pure override returns (string memory) {
-        return string(abi.encodePacked("https://api.example.com/metadata/", id));
+    function tokenURI(uint256 id) public view override returns (string memory) {
+        bytes memory assetKey = _tokenIdToAssetKey[id];
+        return string(abi.encodePacked("https://pacaqpbmmzkxcsdudlgx.supabase.co/storage/v1/object/public/products-onchain/", string(assetKey), ".json"));
     }
 }
