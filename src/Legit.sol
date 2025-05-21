@@ -32,6 +32,11 @@ contract Legit is ERC721, Ownable {
         _assetsMinted[assetHash] = true;
     }
 
+    function addSupply(bytes memory assetKey, uint32 supplyToAdd) public {
+        require(_assetsTotalSupply[assetKey] > 0, "Asset not registered");
+        _assetsTotalSupply[assetKey] += supplyToAdd;
+    }
+
     function getOwnerOf(bytes memory assetKey, uint32 tokenId) public view returns (address) {
         return _ownerOf(uint256(keccak256(abi.encodePacked(assetKey, tokenId))));
     }

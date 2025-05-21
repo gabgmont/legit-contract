@@ -81,4 +81,13 @@ contract LegitTest is Test {
 
         assertEq(legit.tokenURI(assetId), string(abi.encodePacked("https://pacaqpbmmzkxcsdudlgx.supabase.co/storage/v1/object/public/products-onchain/", assetKey, ".json")));
     }
+
+    function test_AddSupply() public {
+        legit.registerAsset(bytes(assetKey), totalSupply);
+
+        legit.addSupply(bytes(assetKey), 10);
+
+        assertEq(legit.getAssetTotalSupply(bytes(assetKey)), totalSupply + 10);
+    }
+    
 }
